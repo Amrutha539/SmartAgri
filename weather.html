@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Agriculture Weather</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('C:/Users/User/Desktop/Mini project/im.jpg') no-repeat center center/cover;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .banner { position: fixed; top: 0; width: 100%; background: green; color: orange; font-size: 50px; font-weight: bold; padding: 8px 0; overflow: hidden; white-space: nowrap; z-index: 1000; text-align: center; }
+    .banner span { display: inline-block; padding-left: 100%; animation: scroll-left 12s linear infinite; }
+    @keyframes scroll-left { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+    .container { background: rgba(255, 255, 255, 0.85); padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); text-align: center; width: 400px; margin-top: 60px; }
+    h1, h2 { color: green; margin-bottom: 20px; }
+    input { padding: 8px; width: 70%; border-radius: 6px; border: 1px solid #ccc; margin-top: 10px; }
+    button { padding: 10px 15px; background: #4caf50; color: #fff; border: none; border-radius: 8px; cursor: pointer; margin-top: 10px; }
+    button:hover { background: #388e3c; }
+    #weatherResult { margin-top: 20px; text-align: left; }
+    #weatherResult p { margin: 6px 0; }
+    .nav-buttons { margin-top: 20px; }
+    .nav-buttons button { margin: 0 10px; padding: 10px 20px; font-size: 16px; background: orange; color: white; border: none; border-radius: 6px; cursor: pointer; }
+    .nav-buttons button:hover { background: darkorange; }
+    .chatbot-toggle { position: fixed; bottom: 20px; right: 20px; background: orange; border: none; border-radius: 50%; width: 60px; height: 60px; font-size: 30px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+    .chatbot-window { position: fixed; bottom: 90px; right: 20px; width: 300px; height: 350px; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: none; flex-direction: column; overflow: hidden; }
+    .chatbot-header { background: green; color: white; padding: 10px; font-weight: bold; text-align: center; }
+    .chatbot-messages { flex: 1; padding: 10px; overflow-y: auto; background: #f9f9f9; }
+    .message { margin: 6px 0; padding: 8px 12px; border-radius: 16px; max-width: 80%; clear: both; }
+    .bot-message { background: #4caf50; color: white; float: left; }
+    .user-message { background: #e0e0e0; color: black; float: right; }
+    .chatbot-input { display: flex; border-top: 1px solid #ddd; }
+    .chatbot-input input { flex: 1; border: none; padding: 10px; border-radius: 0 0 0 12px; outline: none; }
+    .chatbot-input button { background: orange; border: none; padding: 10px; border-radius: 0 0 12px 0; cursor: pointer; color: white; }
+  </style>
+</head>
+<body>
+  <div class="banner"><span>🌾Smart Agri Assistant🌾</span></div>
+  <!-- Navigation Menu -->
+<!-- ===== TOP MENU (same as Tips page) ===== -->
+<div class="menu-bar">
+    <a href="index.html">Home</a>
+    <a href="crops.html">Crops</a>
+    <a href="weather.html" class="active">Weather</a>
+    <a href="tips.html">Tips</a>
+    <a href="contact.html">Contact</a>
+    <a href="logout.html">Logout</a>
+</div>
+<!-- ======================================== -->
+
+
+<style>
+  /* ==== MENU BAR STYLE (same as Tips page) ==== */
+.menu-bar {
+    background:rgba(0,77,0,0.9);
+    padding: 12px 0;
+    text-align: center;
+    position: fixed;
+    top: 80px;     /* below the green banner */
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+.menu-bar a {
+    color: white;
+    margin: 0 25px;
+     top: 100px;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 8px 15px;
+    border-radius: 4psx;
+}
+
+.menu-bar a:hover,
+.menu-bar a.active {
+    background: rgba(0,77,0,0.9);
+    color: #fff;
+}
+
+/* pushes the card down so it does NOT overlap the menu */
+.container {
+    margin-top: 180px !important;
+}
+</style>
+
+  <div class="container">
+    <h2>Weather Report 🌦️</h2>
+    <h1>Smart Agriculture Assistant</h1>
+
+    <!-- City Search -->
+    <input type="text" id="cityInput" placeholder="Enter city name">
+    <button onclick="getCityWeather()">🌆 Get City Weather</button>
+    <br><br>
+
+    <!-- Geolocation -->
+    <button onclick="getLocationWeather()">📍 Get My Location Weather</button>
+
+    <div id="weatherResult"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="window.location.href='crops.html'">Previous</button>
+    <button onclick="window.location.href='tips.html'">Next</button>
+  </div>
+
+  <!-- Chatbot -->
+  <button class="chatbot-toggle" onclick="toggleChat()">💬</button>
+  <div class="chatbot-window" id="chatbot">
+    <div class="chatbot-header">Smart Chatbot</div>
+    <div class="chatbot-messages" id="chatMessages">
+      <div class="message bot-message">Hello! Ask me about crops 🌱</div>
+    </div>
+    <div class="chatbot-input">
+      <input type="text" id="chatInput" placeholder="Type a message...">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    function suggestCrop(temp, humidity, weather) {
+      weather = weather.toLowerCase();
+      if (weather.includes("rain")) return "Rice or Jute (Rain-fed crops)";
+      else if (temp > 30 && humidity < 50) return "Maize, Sorghum, or Millets";
+      else if (temp >= 20 && temp <= 30 && humidity > 50) return "Vegetables like Tomato, Cucumber, or Beans";
+      else if (temp < 20) return "Wheat, Barley, or Mustard";
+      else return "Paddy, Pulses, or Mixed Crops";
+    }
+
+    // ----- City Weather -----
+   async function getCityWeather() {
+  const city = document.getElementById("cityInput").value;
+  if (!city) return;
+  const weatherResult = document.getElementById("weatherResult");
+
+  try {
+    const response = await fetch(`http://127.0.0.1:5000/weather?city=${city}`);
+    const data = await response.json();
+    if (data.error) throw new Error(data.error);
+
+    const temp = data.temperature;
+    const humidity = data.humidity;
+    const weather = data.condition;
+
+    // SAFELY HANDLE recommended_crops
+    const crop = data.recommended_crops
+      ? data.recommended_crops.join(", ")
+      : "No crop data available";
+
+    weatherResult.innerHTML = `
+      <h3>📍 Location: ${data.city}</h3>
+      <p>🌡️ Temperature: ${temp} °C</p>
+      <p>💧 Humidity: ${humidity}%</p>
+      <p>☁️ Condition: ${weather}</p>
+      <h4>🌱 Suggested Crop: ${crop}</h4>
+    `;
+  } catch (err) {
+    weatherResult.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
+  }
+}
+
+
+
+    // ----- Geolocation Weather -----
+    async function getLocationWeather() {
+  const weatherResult = document.getElementById("weatherResult");
+  if (!navigator.geolocation) {
+    weatherResult.innerHTML = "<p style='color:red;'>Geolocation not supported.</p>";
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(async (position) => {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+
+    try {
+      const response = await fetch("http://127.0.0.1:5000/get_weather", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lat, lon })
+      });
+      const data = await response.json();
+      if (data.error) throw new Error(data.error);
+
+      // ⬅️ USE BACKEND CROP LIST
+      const crop = data.recommended_crops.join(", ");
+
+      weatherResult.innerHTML = `
+        <h3>📍 Location: ${data.city}</h3>
+        <p>🌡️ Temperature: ${data.temperature} °C</p>
+        <p>💧 Humidity: ${data.humidity}%</p>
+        <p>☁️ Condition: ${data.condition}</p>
+        <h4>🌱 Suggested Crop: ${crop}</h4>
+      `;
+    } catch (err) {
+      weatherResult.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
+    }
+  });
+}
+
+      
+    
+
+    // ----- Chatbot -----
+    function toggleChat() {
+      const chat = document.getElementById("chatbot");
+      chat.style.display = chat.style.display === "flex" ? "none" : "flex";
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById("chatInput");
+      const messages = document.getElementById("chatMessages");
+      if (input.value.trim() === "") return;
+
+      const userMsg = document.createElement("div");
+      userMsg.className = "message user-message";
+      userMsg.textContent = input.value;
+      messages.appendChild(userMsg);
+
+      const userText = input.value;
+      input.value = "";
+
+      try {
+        const response = await fetch("http://127.0.0.1:5000/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: userText })
+        });
+        const data = await response.json();
+        const botMsg = document.createElement("div");
+        botMsg.className = "message bot-message";
+        botMsg.textContent = data.reply;
+        messages.appendChild(botMsg);
+        messages.scrollTop = messages.scrollHeight;
+      } catch {
+        const botMsg = document.createElement("div");
+        botMsg.className = "message bot-message";
+        botMsg.textContent = "❌ Error contacting server.";
+        messages.appendChild(botMsg);
+        messages.scrollTop = messages.scrollHeight;
+      }
+    }
+  </script>
+</body>
+</html>
