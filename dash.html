@@ -1,0 +1,247 @@
+<!DOCTYPE html>   
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Smart Agriculture Assistant</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('C:/Users/User/Desktop/Mini project/im.jpg') no-repeat center center fixed; 
+      background-size: cover;  
+      color: #222;
+    }
+    header {
+      background: rgba(0, 128, 0, 0.85);
+      padding: 10px;
+      text-align: center;
+      overflow: hidden;
+    }
+    header h2 {
+      display: inline-block;
+      white-space: nowrap;
+      font-size: 50px;
+      color: darkorange;
+      animation: scrollText 10s linear infinite;
+      font-weight: bold;
+    }
+    @keyframes scrollText {
+      0%   { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    nav {
+      background: rgba(0, 77, 0, 0.9);
+      display: flex;
+      justify-content: center;
+      padding: 10px 0;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 10px 20px;
+      margin: 0 5px;
+      border-radius: 6px;
+      transition: background 0.3s;
+    }
+    nav a:hover { background: #008000; }
+
+    .content {
+      padding: 20px;
+      text-align: center;
+      margin: 20px auto;
+      max-width: 900px;
+    }
+    .nav-buttons {
+      margin-top: 20px;
+    }
+    .nav-buttons button {
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 6px;
+      background: orange;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .nav-buttons button:hover { background: darkorange; }
+
+    #chatbotIcon {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      background: orange;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      font-size: 28px;
+      color: white;
+      transition: transform 0.3s;
+      z-index: 1000;
+    }
+    #chatbotIcon:hover { transform: scale(1.1); }
+
+    #chatbotBox {
+      display: none;
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 320px;
+      height: 420px;
+      background: #fdfdfd;
+      border: 2px solid #008000;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      overflow: hidden;
+      z-index: 1000;
+      flex-direction: column;
+    }
+    #chatHeader {
+      background: #008000;
+      color: white;
+      padding: 10px;
+      text-align: center;
+      font-weight: bold;
+    }
+    #chatMessages {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      font-size: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .userMsg {
+      align-self: flex-end;
+      background: orange;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 16px 16px 0 16px;
+      max-width: 80%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .botMsg {
+      align-self: flex-start;
+      background: #e6ffe6;
+      color: #222;
+      padding: 8px 12px;
+      border-radius: 16px 16px 16px 0;
+      max-width: 80%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    #chatInput {
+      display: flex;
+      border-top: 1px solid #ccc;
+    }
+    #chatInput input {
+      flex: 1;
+      border: none;
+      padding: 10px;
+      outline: none;
+      font-size: 14px;
+    }
+    #chatInput button {
+      background: orange;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+      color: white;
+      font-size: 14px;
+      border-radius: 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h2>Welcome to Smart Agri Assistant🌾</h2>
+  </header>
+
+  <nav>
+    <a href="#" style="pointer-events: none; cursor: default;">Home</a>
+    <a href="crops.html">Crops</a>
+    <a href="weather.html">Weather</a>
+    <a href="tips.html">Tips</a>
+    <a href="contact.html">Contact</a>
+    <a href="login.html">Logout</a>
+  </nav>
+
+  <div class="content">
+    <h2>Agriculture Information🌾</h2> 
+    <p><b> This section will contain agriculture-related information, tips, and guidance.<br> 
+      Agriculture is one of the world’s oldest and most essential occupations. It involves the cultivation of crops, rearing of animals, and management of natural resources to produce food, fiber, and other products. In most developing countries, agriculture contributes significantly to national income and employment. It not only provides food security but also serves as a foundation for industrial growth by supplying raw materials. </b></p>
+    <h2>Smart Agriculture🖥️</h2>
+    <p><b>
+      Weather forecasting systems to guide irrigation and harvesting.  
+      Data analysis and AI to provide crop recommendations.  
+      Mobile applications to deliver information directly to farmers.  
+    </b></p>
+    
+    <div class="nav-buttons">
+      <button onclick="window.location.href='login.html'">Previous</button>
+      <button onclick="window.location.href='crops.html'">Next</button>
+    </div>
+  </div>
+
+  <div id="chatbotIcon" onclick="toggleChat()">💬</div>
+
+  <div id="chatbotBox">
+    <div id="chatHeader">Smart Chatbot 🤖</div>
+    <div id="chatMessages"></div>
+    <div id="chatInput">
+      <input type="text" id="userInput" placeholder="Type a message...">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    function toggleChat() {
+      const box = document.getElementById("chatbotBox");
+      box.style.display = (box.style.display === "none" || box.style.display === "") ? "flex" : "none";
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById("userInput");
+      const messages = document.getElementById("chatMessages");
+      const userText = input.value.trim();
+      if(userText === "") return;
+
+      // User message bubble
+      const userMessage = document.createElement("div");
+      userMessage.className = "userMsg";
+      userMessage.textContent = userText;
+      messages.appendChild(userMessage);
+
+      input.value = "";
+
+      try {
+        const response = await fetch("http://127.0.0.1:5000/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: userText })
+        });
+        const data = await response.json();
+
+        const botMessage = document.createElement("div");
+        botMessage.className = "botMsg";
+        botMessage.textContent = data.reply;
+        messages.appendChild(botMessage);
+        messages.scrollTop = messages.scrollHeight;
+      } catch (err) {
+        const botMessage = document.createElement("div");
+        botMessage.className = "botMsg";
+        botMessage.textContent = "❌ Error contacting server.";
+        messages.appendChild(botMessage);
+        messages.scrollTop = messages.scrollHeight;
+      }
+    }
+  </script>
+</body>
+</html>

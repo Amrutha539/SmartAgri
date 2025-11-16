@@ -1,0 +1,250 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Agriculture Assistant - Login</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url("C:/Users/User/Desktop/Mini project/im.jpg") no-repeat center center/cover;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    /* Moving banner */
+    .marquee-container {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      overflow: hidden;
+      color:#228B22;
+      padding: 10px 0;
+    }
+
+    .marquee-text {
+      display: inline-block;
+      white-space: nowrap;
+      font-size: 60px;
+      font-weight: bold;
+      animation: marquee 12s linear infinite;
+    }
+
+    @keyframes marquee {
+      0%   { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .container {
+      background: rgba(238, 237, 232, 0.973);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      width: 350px;
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #007BFF;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    .links {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .links a {
+      color: #007BFF;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .links a:hover {
+      text-decoration: underline;
+    }
+
+    .message {
+      color: red;
+      margin-top: 10px;
+    }
+
+    /* Hide all forms except login initially */
+    #registerForm, #changePasswordForm, #forgotPasswordForm {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Moving text banner -->
+  <div class="marquee-container">
+    <span class="marquee-text"> 🌾 Smart Agri Assistant 🌾 </span>
+  </div>
+
+  <!-- LOGIN FORM -->
+  <div class="container" id="loginForm">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username or Email" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button onclick="login()">Login</button>
+    <div class="message" id="loginMessage"></div>
+    <div class="links">
+      <p><a onclick="showForgotPassword()">Forgot Password?</a></p>
+      <p><a onclick="showRegister()">Register</a></p>
+      <p><a onclick="showChangePassword()">Change Password</a></p>
+    </div>
+  </div>
+
+  <!-- REGISTER FORM -->
+  <div class="container" id="registerForm">
+    <h2>Register</h2>
+    <input type="text" id="newUsername" placeholder="New Username" required>
+    <input type="password" id="newPassword" placeholder="New Password" required>
+    <button onclick="register()">Register</button>
+    <div class="links">
+      <p><a onclick="showLogin()">Back to Login</a></p>
+    </div>
+  </div>
+
+  <!-- CHANGE PASSWORD FORM -->
+  <div class="container" id="changePasswordForm">
+    <h2>Change Password</h2>
+    <input type="text" id="cpUsername" placeholder="Username" required>
+    <input type="password" id="cpOldPassword" placeholder="Old Password" required>
+    <input type="password" id="cpNewPassword" placeholder="New Password" required>
+    <button onclick="changePassword()">Change</button>
+    <div class="links">
+      <p><a onclick="showLogin()">Back to Login</a></p>
+    </div>
+  </div>
+
+  <!-- FORGOT PASSWORD FORM -->
+  <div class="container" id="forgotPasswordForm">
+    <h2>Forgot Password</h2>
+    <input type="text" id="fpUsername" placeholder="Enter Username" required>
+    <input type="password" id="fpNewPassword" placeholder="New Password" required>
+    <button onclick="resetPassword()">Reset Password</button>
+    <div class="links">
+      <p><a onclick="showLogin()">Back to Login</a></p>
+    </div>
+  </div>
+
+  <script>
+    // Temporary "database"
+    let users = [{ username: "admin", password: "1234" }];
+
+    function login() {
+      let username = document.getElementById("username").value;
+      let password = document.getElementById("password").value;
+      let message = document.getElementById("loginMessage");
+
+      let user = users.find(u => u.username === username && u.password === password);
+      if (user) {
+        // Redirect to dashboard page
+        window.location.href = "dash.html";  
+      } else {
+        message.innerText = "❌ Invalid username or password!";
+      }
+    }
+
+    function showRegister() {
+      hideAll();
+      document.getElementById("registerForm").style.display = "block";
+    }
+
+    function showLogin() {
+      hideAll();
+      document.getElementById("loginForm").style.display = "block";
+    }
+
+    function showChangePassword() {
+      hideAll();
+      document.getElementById("changePasswordForm").style.display = "block";
+    }
+
+    function showForgotPassword() {
+      hideAll();
+      document.getElementById("forgotPasswordForm").style.display = "block";
+    }
+
+    function hideAll() {
+      document.getElementById("loginForm").style.display = "none";
+      document.getElementById("registerForm").style.display = "none";
+      document.getElementById("changePasswordForm").style.display = "none";
+      document.getElementById("forgotPasswordForm").style.display = "none";
+    }
+
+    function register() {
+      let newUsername = document.getElementById("newUsername").value;
+      let newPassword = document.getElementById("newPassword").value;
+
+      if (users.find(u => u.username === newUsername)) {
+        alert("⚠️ Username already exists!");
+        return;
+      }
+      users.push({ username: newUsername, password: newPassword });
+      alert("✅ Registered successfully!");
+      showLogin();
+    }
+
+    function changePassword() {
+      let username = document.getElementById("cpUsername").value;
+      let oldPassword = document.getElementById("cpOldPassword").value;
+      let newPassword = document.getElementById("cpNewPassword").value;
+
+      let user = users.find(u => u.username === username && u.password === oldPassword);
+      if (user) {
+        user.password = newPassword;
+        alert("✅ Password changed successfully!");
+        showLogin();
+      } else {
+        alert("❌ Invalid username or old password!");
+      }
+    }
+
+    function resetPassword() {
+      let username = document.getElementById("fpUsername").value;
+      let newPassword = document.getElementById("fpNewPassword").value;
+
+      let user = users.find(u => u.username === username);
+      if (user) {
+        user.password = newPassword;
+        alert("✅ Password reset successfully!");
+        showLogin();
+      } else {
+        alert("❌ Username not found!");
+      }
+    }
+  </script>
+</body>
+</html>

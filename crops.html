@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crops Dashboard</title>
+<style>
+body {
+  margin: 0; font-family: Arial; color: white; text-align: center;
+  background: url('C:/Users/User/Desktop/Mini project/im.jpg') no-repeat center center fixed;
+  background-size: cover; min-height: 100vh; position: relative;
+}
+header {
+  background: rgba(0,100,0,0.8); padding: 20px; font-weight: bold; overflow: hidden; white-space: nowrap;
+}
+header span {
+  display: inline-block; font-size: 50px; font-weight: bold; color: orange;
+  text-shadow: 2px 2px 6px black; animation: moveLeft 12s linear infinite;
+}
+@keyframes moveLeft {0%{transform:translateX(100%);}100%{transform:translateX(-100%);}}
+nav { background: rgba(0,77,0,0.9); display:flex; justify-content:center; padding:10px 0; }
+nav a { color:white; text-decoration:none; padding:10px 20px; margin:0 5px; border-radius:6px; transition:0.3s; }
+nav a:hover { background:#008000; }
+.btn-container { 
+  position: relative;
+  margin-top: 30px;
+  display: flex; 
+  justify-content: center; 
+  gap: 20px; 
+}
+.nav-btn { padding:10px 20px; border:none; border-radius:6px; background:orange; color:white; cursor:pointer; font-size:16px; }
+.nav-btn:hover { background:darkorange; }
+
+/* Cultivation guide card */
+.cultivation-card { width:70%; max-height:500px; margin:60px auto; padding:20px; text-align:left;
+  background: rgba(0,0,0,0.6); border-radius:12px; overflow-y:auto;
+}
+.cultivation-card h2 { color: orange; text-align:center; animation: blinkText 1.2s infinite; }
+@keyframes blinkText {50% { opacity:0; }}
+#cultivationOutput { margin-top:20px; color:white; }
+#cultivationOutput h3 { color: orange; margin-bottom:15px; text-align:center; }
+#cultivationOutput ol { padding-left:20px; }
+#cultivationOutput li { margin:8px 0; font-size:16px; }
+
+/* Chatbot */
+.chatbot-container { position:fixed; bottom:80px; right:20px; width:300px; background:white; border-radius:12px; display:none; flex-direction:column; overflow:hidden; z-index:1000; }
+.chatbot-header { background:orange; color:white; padding:10px; font-weight:bold; cursor:pointer; }
+.chatbot-messages { height:220px; overflow-y:auto; padding:10px; font-size:14px; color:black; background:#f9f9f9; }
+.chatbot-input { display:flex; border-top:1px solid #ccc; }
+.chatbot-input input { flex:1; padding:8px; border:none; outline:none; }
+.chatbot-input button { padding:8px; background:orange; border:none; color:white; cursor:pointer; }
+.chatbot-toggle { position:fixed; bottom:20px; right:20px; background:orange; color:white; border:none; border-radius:50%; width:50px; height:50px; font-size:22px; cursor:pointer; z-index:1001; }
+.chat-bubble { max-width:80%; padding:8px 12px; border-radius:12px; margin:6px 0; display:inline-block; box-shadow:0 2px 6px rgba(0,0,0,0.2); }
+.user-msg { background:orange; color:white; text-align:right; float:right; clear:both; }
+.bot-msg { background:lightgreen; color:black; text-align:left; float:left; clear:both; }
+</style>
+</head>
+<body>
+
+<header><span>🌾 Smart Agri Assistant 🌾</span></header>
+<nav>
+  <a href="dash.html">Home</a>
+  <a href="crops.html">Crops</a>
+  <a href="weather.html">Weather</a>
+  <a href="tips.html">Tips</a>
+  <a href="contact.html">Contact</a>
+  <a href="login.html">Logout</a>
+</nav>
+
+<div class="cultivation-card">
+  <h2><b>🌾 Crop Cultivation Guide</b></h2>
+  <input type="text" id="cropInput" placeholder="Enter crop (e.g., rice, tomato, chilli)" style="padding:6px; border-radius:4px; width:60%;">
+  <button class="nav-btn" onclick="getCultivationGuide()">Get Guide</button>
+  <select id="languageSelect" style="margin-left:10px; padding:5px; border-radius:4px;">
+    <option value="en">English</option>
+    <option value="hi">Hindi</option>
+    <option value="kn">Kannada</option>
+    <option value="ta">Tamil</option>
+    <option value="te">Telugu</option>
+    <option value="ml">Malayalam</option>
+  </select>
+  <div id="cultivationOutput"></div>
+</div>
+
+<div class="btn-container">
+  <button class="nav-btn" onclick="window.location.href='dash.html'">Previous</button>
+  <button class="nav-btn" onclick="window.location.href='weather.html'">Next</button>
+</div>
+
+<button class="chatbot-toggle" onclick="toggleChatbot()">💬</button>
+<div class="chatbot-container" id="chatbot">
+  <div class="chatbot-header" onclick="toggleChatbot()">Smart Chatbot</div>
+  <div class="chatbot-messages" id="chatMessages">
+    <div class="chat-bubble bot-msg">Hi! Ask me about crops, weather, or farming tips 🌱</div>
+  </div>
+  <div class="chatbot-input">
+    <input type="text" id="userInput" placeholder="Type a message...">
+    <button onclick="sendMessage()">➤</button>
+  </div>
+</div>
+
+<script>
+// Toggle chatbot
+function toggleChatbot() {
+  const chatbot = document.getElementById("chatbot");
+  chatbot.style.display = (chatbot.style.display === "flex") ? "none" : "flex";
+}
+
+// Send chatbot message
+async function sendMessage() {
+  const input = document.getElementById("userInput");
+  const msg = input.value.trim();
+  if (!msg) return;
+  const chatBox = document.getElementById("chatMessages");
+  chatBox.innerHTML += `<div class="chat-bubble user-msg">${msg}</div>`;
+  try {
+    const res = await fetch("http://127.0.0.1:5000/chat", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({message:msg})
+    });
+    const data = await res.json();
+    chatBox.innerHTML += `<div class="chat-bubble bot-msg">${data.reply}</div>`;
+  } catch(err){
+    chatBox.innerHTML += `<div class="chat-bubble bot-msg" style="background:red;color:white;">❌ Error: ${err}</div>`;
+  }
+  chatBox.scrollTop = chatBox.scrollHeight;
+  input.value = "";
+}
+
+// Translate text using MyMemory API
+async function translateText(text, lang) {
+  if(lang === "en") return text;
+  const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${lang}`);
+  const data = await res.json();
+  return data.responseData.translatedText;
+}
+
+// Fetch crop guide and translate piece by piece to avoid query limit
+async function getCultivationGuide() {
+  const crop = document.getElementById("cropInput").value.trim();
+  const output = document.getElementById("cultivationOutput");
+  const lang = document.getElementById("languageSelect").value;
+  if (!crop) { output.innerHTML="<p style='color:red;'>❌ Please enter a crop name.</p>"; return; }
+
+  try {
+    const res = await fetch(`http://127.0.0.1:5000/get_crop_guide?crop=${crop}`);
+    const data = await res.json();
+    if (data.error) { output.innerHTML=`<p style='color:red;'>❌ ${data.error}</p>`; return; }
+
+    // Split into sections
+    let sections = data.guide.split(/\n{2,}/).filter(s=>s.trim()!=="");
+    let html = `<h3>${data.crop.toUpperCase()} Cultivation Steps</h3>`;
+
+    for(const section of sections){
+      let title = section.split("\n")[0];
+      let steps = section.split("\n").slice(1).filter(s=>s.trim()!=="");
+
+      if(lang !== "en"){
+        title = await translateText(title, lang);
+        for(let i=0;i<steps.length;i++){
+          steps[i] = await translateText(steps[i], lang);
+        }
+      }
+
+      html += `<h4 style="color:orange;">${title}</h4><ol>`;
+      steps.forEach(step => html += `<li>${step}</li>`);
+      html += `</ol>`;
+    }
+
+    output.innerHTML = html;
+
+  } catch(err) {
+    output.innerHTML = `<p style='color:red;'>❌ Error: ${err}</p>`;
+  }
+}
+
+
+
+async function getCultivationGuide() {
+  const crop = document.getElementById("cropInput").value.trim();
+  const output = document.getElementById("cultivationOutput");
+  const lang = document.getElementById("languageSelect").value;
+  if (!crop) {
+    output.innerHTML = "<p style='color:red;'>❌ Please enter a crop name.</p>";
+    return;
+  }
+
+  try {
+    const res = await fetch(`http://127.0.0.1:5000/get_crop_guide?crop=${crop}&lang=${lang}`);
+    const data = await res.json();
+
+    if (data.error) {
+      output.innerHTML = `<p style='color:red;'>❌ ${data.error}</p>`;
+      return;
+    }
+
+    // Split into sections by double newline (I, II, III)
+    let sections = data.guide.split(/\n{2,}/).filter(s => s.trim() !== "");
+    let html = `<h3>${data.crop.toUpperCase()} Cultivation Steps</h3>`;
+
+    sections.forEach(section => {
+      let title = section.split("\n")[0];
+      let steps = section.split("\n").slice(1).filter(s => s.trim() !== "");
+      html += `<h4 style="color:orange;">${title}</h4><ol>`;
+      steps.forEach(step => html += `<li>${step}</li>`);
+      html += `</ol>`;
+    });
+
+    output.innerHTML = html;
+
+  } catch (err) {
+    output.innerHTML = `<p style='color:red;'>❌ Error: ${err}</p>`;
+  }
+}
+
+</script>
+
+</body>
+</html>
