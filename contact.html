@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact via WhatsApp - Smart Agriculture Assistant</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      background: url('C:/Users/User/Desktop/Mini project/im.jpg') no-repeat center center/cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .contact-box {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 30px;
+      border-radius: 15px;
+      width: 420px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+
+    h2 { color: #2e7d32; margin-bottom: 15px; }
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 8px;
+      background-color: #25D366; /* WhatsApp green */
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover { background-color: #128C7E; }
+    .note { font-size: 13px; color: #555; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+<div class="contact-box">
+  <h2>Contact Us via WhatsApp</h2>
+  <form id="contactForm">
+    <input type="text" id="name" placeholder="Your Name" required>
+    <input type="email" id="email" placeholder="Your Email" required>
+    <input type="text" id="subject" placeholder="Subject" required>
+    <textarea id="message" rows="4" placeholder="Your Message" required></textarea>
+    <select id="recipient" required>
+      <option value="">Select Recipient</option>
+      <option value="916363143001">Amrutha MS</option>
+      <option value="917204868216">Latha M</option>
+      <option value="919844870867">Amrutha M</option>
+      <option value="group">All Owners (WhatsApp Group)</option>
+    </select>
+    <button type="submit">Send via WhatsApp</button>
+    <p class="note">Select an owner or group. Individual owners will receive a prefilled message. Group requires manual paste.</p>
+  </form>
+</div>
+
+<script>
+  const GROUP_LINK = "https://chat.whatsapp.com/Cx5xRR1CAY8FLlEtpxH6zD";
+
+  document.getElementById('contactForm').addEventListener('submit', function(e){
+    e.preventDefault();
+
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const subject = document.getElementById('subject').value.trim();
+    const message = document.getElementById('message').value.trim();
+    const recipient = document.getElementById('recipient').value;
+
+    if(!name || !email || !subject || !message || !recipient){
+      alert("Please fill in all fields and select a recipient.");
+      return;
+    }
+
+    const text = `Hello, I'm ${name} (${email}).\nSubject: ${subject}\n\n${message}`;
+
+    if(recipient === "group"){
+      // Open WhatsApp group link (user can paste the message)
+      window.open(GROUP_LINK, "_blank");
+    } else {
+      // Open individual owner with prefilled message
+      const waLink = `https://wa.me/${recipient}?text=${encodeURIComponent(text)}`;
+      window.open(waLink, "_blank");
+    }
+  });
+</script>
+
+</body>
+</html>
